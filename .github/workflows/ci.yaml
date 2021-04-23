@@ -1,0 +1,43 @@
+name: AppHub Publish
+
+on:
+  push:
+    branches:
+      - "main"
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.9
+        with:
+          versionSpec: "5.x"
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.9
+        with:
+          useConfigFile: true
+
+      - name: Docker meta
+        id: meta
+        uses: crazy-max/ghaction-docker-meta@v2
+        with:
+          images: |
+            apphub-ui
+          tags: |
+            type=ref,event=branch  
+            type=raw,value=${{steps.gitversion.outputs.informationalVersion}}
+            type=sha,prefix=${{steps.gitversion.outputs.branchName}}_
+            type=sha,prefix=
+      - name: Dump
+        run: |
+          echo "Tags: ${{ steps.meta.outputs.tags }}"
