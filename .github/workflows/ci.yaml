@@ -1,9 +1,9 @@
-name: AppHub Publish
+name: Test Publish
 
 on:
   release:
     types:
-      - release
+      - released
   workflow_dispatch:
 
 jobs:
