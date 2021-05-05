@@ -1,11 +1,9 @@
 name: AppHub Publish
 
 on:
-  push:
-    branches:
-      - "main"
-    tags:
-      - "[0-9]+.[0-9]+.[0-9]+"
+  release:
+    types:
+      - release
   workflow_dispatch:
 
 jobs:
